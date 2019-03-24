@@ -5,8 +5,11 @@ import { Link } from 'react-router-dom'
 
 import {
     Layout, Menu, Breadcrumb, Icon,
-    Row, Col, Avatar
+    Row, Col, Avatar, PageHeader
 } from 'antd'
+
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 
 const {
     Header: LayoutHeader,
@@ -15,10 +18,9 @@ const {
     Sider,
 } = Layout
 
-const SubMenu = Menu.SubMenu
-
 const Header = styled(LayoutHeader) `
   background-color: #ffffff;
+  height: initial;
 `
 
 const Logo = styled.h1 `
@@ -72,29 +74,10 @@ class MainLayout extends Component {
                         </Menu.Item>
                         <Menu.Item key="2">
                             <Icon type="dollar" />
-                            <span>Кассы</span>
+                            <span>Очередь платежей</span>
                             <Link to="/cashboxes" />
                         </Menu.Item>
-                        <Menu.Item key="3">
-                            <Icon type="team" />
-                            <span>Клиенты</span>
-                            <Link to="/clients" />
-                        </Menu.Item>
-                        <Menu.Item key="4">
-                            <Icon type="book" />
-                            <span>Билеты</span>
-                            <Link to="/tickets" />
-                        </Menu.Item>
-                        <Menu.Item key="5">
-                            <Icon type="copy" />
-                            <span>Отчеты</span>
-                            <Link to="/reports" />
-                        </Menu.Item>
-                        <Menu.Item key="6">
-                            <Icon type="setting" />
-                            <span>Управление</span>
-                            <Link to="/management" />
-                        </Menu.Item>
+                       
                         {/* <SubMenu
               key="sub1"
               title={<span><Icon type="user" /><span>User</span></span>}
@@ -121,9 +104,23 @@ class MainLayout extends Component {
                     <Header>
                         <Row type="flex" justify="space-between" >
                             <Col>
+                                <PageHeader
+                                    title="Поиск платежей"
+                                    subTitle="На этой странице можно повеситься"
+                                />
                             </Col>
                             <Col>
-                                <Avatar icon="user" />
+                                
+                                <Menu
+                                    // onClick={this.handleClick}
+                                    // selectedKeys={[this.state.current]}
+                                    mode="horizontal"
+                                >
+                                <SubMenu title={<Avatar icon="user" />}>
+                                    <Menu.Item key="setting:1">Профиль</Menu.Item>
+                                    <Menu.Item key="setting:2">Выйти</Menu.Item>
+                                </SubMenu>
+                                </Menu>
                             </Col>
                         </Row>
                     </Header>
@@ -138,7 +135,7 @@ class MainLayout extends Component {
                         </div>
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        {`Lombardus ©${new Date().getFullYear()} Created by Meduse Software`}
+                        {`Micro Processing ©${new Date().getFullYear()} Created by Meduse Software`}
                     </Footer>
                 </Layout>
 

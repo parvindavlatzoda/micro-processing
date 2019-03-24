@@ -18,8 +18,10 @@ class LoginForm extends React.Component {
                 })
                     .then(res => res.json())
                     .then(function(response) {
-                        localStorage.setItem('token', response.token);
-                        window.location.replace('/');
+                        if (response.token) {
+                            localStorage.setItem('token', response.token);
+                            window.location.replace('/');
+                        }
                     })
                     .catch(function(error) {
                         console.log('There has been a problem with your fetch operation: ', error.message);
