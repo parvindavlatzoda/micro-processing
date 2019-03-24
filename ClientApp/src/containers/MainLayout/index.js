@@ -5,8 +5,23 @@ import { Link } from 'react-router-dom'
 
 import {
     Layout, Menu, Breadcrumb, Icon,
-    Row, Col, Avatar, PageHeader
+    Row, Avatar, Dropdown, PageHeader
 } from 'antd'
+
+const menu = (
+    <Menu>
+      <Menu.Item key="0">
+        <a href="#">Profile</a>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <a href="#">Settings</a>
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="3">Sign Out</Menu.Item>
+    </Menu>
+  );
+
+
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -103,25 +118,13 @@ class MainLayout extends Component {
 
                     <Header>
                         <Row type="flex" justify="space-between" >
-                            <Col>
-                                <PageHeader
-                                    title="Поиск платежей"
-                                    subTitle="На этой странице можно повеситься"
-                                />
-                            </Col>
-                            <Col>
-                                
-                                <Menu
-                                    // onClick={this.handleClick}
-                                    // selectedKeys={[this.state.current]}
-                                    mode="horizontal"
-                                >
-                                <SubMenu title={<Avatar icon="user" />}>
-                                    <Menu.Item key="setting:1">Профиль</Menu.Item>
-                                    <Menu.Item key="setting:2">Выйти</Menu.Item>
-                                </SubMenu>
-                                </Menu>
-                            </Col>
+                            <PageHeader
+                                title="Поиск платежей"
+                                subTitle="На этой странице можно повеситься"
+                            />
+                            <Dropdown overlay={menu} placement="bottomCenter" trigger={['click']} >
+                                <Avatar icon="user" style={{ color: '#f56a00', backgroundColor: '#fde3cf', marginTop: '0.7em'}} />
+                            </Dropdown>
                         </Row>
                     </Header>
 
@@ -135,7 +138,7 @@ class MainLayout extends Component {
                         </div>
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        {`Micro Processing ©${new Date().getFullYear()} Created by Meduse Software`}
+                        {`Micro Processin ©${new Date().getFullYear()} Created by Meduse Software`}
                     </Footer>
                 </Layout>
 

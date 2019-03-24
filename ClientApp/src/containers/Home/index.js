@@ -1,7 +1,9 @@
 import React, { Fragment } from 'react'
 import TransactionsSearch from './TransactionsSearch'
 
-import { Popconfirm, Icon, Divider, Table, Tag, Drawer } from 'antd';
+import { Popconfirm, Icon, Divider, Table, Tag, Button } from 'antd';
+
+const ButtonGroup = Button.Group;
 
 const columns = [{
   title: 'Created at',
