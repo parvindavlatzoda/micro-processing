@@ -17,7 +17,7 @@ const menu = (
         <a href="#">Settings</a>
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item key="3">Sign Out</Menu.Item>
+      <Menu.Item key="3"><a >Sign Out</a></Menu.Item>
     </Menu>
   );
 

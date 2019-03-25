@@ -1,11 +1,17 @@
 import React from 'react'
 import {
-  Form, DatePicker, TimePicker, Button, Input, Select
+  Form, DatePicker, TimePicker, Button, Input, Select, message
 } from 'antd';
 import styled from 'styled-components'
 
 const { MonthPicker, RangePicker } = DatePicker;
 const Option = Select.Option;
+
+const success = () => {
+  message.loading('Генерация отчета', 2.5)
+    .then(() => message.success('Отчет сгенерирован', 1.5))
+    .then(() => message.info('Дождитесь окончания загрузки файла', 2.5));
+};
 
 class TimeRelatedForm extends React.Component {
   handleSubmit = (e) => {
@@ -163,7 +169,7 @@ class TimeRelatedForm extends React.Component {
           }}
         >
           <Button type="primary" htmlType="submit" style={{ marginRight: '1em' }}>Search</Button>
-          <Button type="primary" icon="download" disabled htmlType="submit">Download .csv</Button>
+          <Button icon="download" onClick={success} htmlType="submit">Download .csv</Button>
 
         </Form.Item>
       </Form>
