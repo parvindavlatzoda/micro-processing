@@ -11,7 +11,7 @@ import {
 const menu = (
     <Menu>
       <Menu.Item key="0">
-        <a href="#">Profile</a>
+        <Link to="/profile">Profile</Link>
       </Menu.Item>
       <Menu.Item key="1">
         <a href="#">Settings</a>
