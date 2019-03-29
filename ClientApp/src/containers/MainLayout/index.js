@@ -92,6 +92,11 @@ class MainLayout extends Component {
                             <span>Очередь платежей</span>
                             <Link to="/cashboxes" />
                         </Menu.Item>
+                        <Menu.Item key="3">
+                          <Icon type="setting"/>
+                          <span>Управление</span>
+                          <Link to="/management"/>
+                        </Menu.Item>
                        
                         {/* <SubMenu
               key="sub1"
