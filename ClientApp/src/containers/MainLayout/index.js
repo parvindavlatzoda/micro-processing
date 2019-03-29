@@ -11,7 +11,7 @@ import {
 const menu = (
     <Menu>
       <Menu.Item key="0">
-        <a href="#">Profile</a>
+        <Link to="/profile">Profile</Link>
       </Menu.Item>
       <Menu.Item key="1">
         <a href="#">Settings</a>
@@ -91,6 +91,11 @@ class MainLayout extends Component {
                             <Icon type="dollar" />
                             <span>Очередь платежей</span>
                             <Link to="/cashboxes" />
+                        </Menu.Item>
+                        <Menu.Item key="3">
+                          <Icon type="setting"/>
+                          <span>Управление</span>
+                          <Link to="/management"/>
                         </Menu.Item>
                        
                         {/* <SubMenu
