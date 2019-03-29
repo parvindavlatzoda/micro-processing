@@ -9,9 +9,7 @@ class Profile extends Component {
       <Fragment>
         <ProfileInfoBar/>
         <ProfileTab/> 
-        <div>Purgen Ivanych</div>
         <Button type="primary">click me</Button>
-        
       </Fragment>
     )
   }
