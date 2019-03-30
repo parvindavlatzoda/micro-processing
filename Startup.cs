@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MP.Data;
+using MP.Keeper.Services;
 using MP.Models.User;
 using MP.Services;
 using Newtonsoft.Json.Serialization;
@@ -121,14 +122,16 @@ namespace MP {
             
             // Adding repos
             services.AddScoped<IAccountRepository, AccountRepository>();
-            
+            services.AddScoped<IKeeperRepository, KeeperRepository>();
+
             // API versioning
             services.AddApiVersioning(options => {
                 options.ReportApiVersions = true;
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.DefaultApiVersion = new ApiVersion(1, 0);
             });
-            
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper, UrlHelper>(implementationFactory => {
                 var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
                 return new UrlHelper(actionContext);

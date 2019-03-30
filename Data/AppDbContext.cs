@@ -2,6 +2,7 @@ using System.Transactions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MP.Data.Keeper;
 
 namespace MP.Data {
     public class AppDbContext : IdentityDbContext<AppUser> {
@@ -10,6 +11,9 @@ namespace MP.Data {
         }
         
         //public DbSet<Transaction> Transactions { get; set; }
+
+        // Keeper
+        public DbSet<RubReport> RubReports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
