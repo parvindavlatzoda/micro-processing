@@ -166,6 +166,12 @@ namespace MP {
                 config.CreateMap<RubReport, RubReportDto>();
             });
             
+            // For NGINX
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
