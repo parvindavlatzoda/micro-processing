@@ -4,7 +4,7 @@ namespace MP.Keeper.Helpers
         private const int maxPageSize = 500;
 
         public int PageNumber { get; set; } = 1;
-
+        public string SearchQuery { get; set; }
 
         private int _pageSize = 10;
 
@@ -12,9 +12,5 @@ namespace MP.Keeper.Helpers
             get => _pageSize;
             set => _pageSize = (value > maxPageSize) ? maxPageSize : value;
         }
-        
-        public string FirstLetter { get; set; }
-        
-        public string SearchQuery { get; set; }
     }
 }

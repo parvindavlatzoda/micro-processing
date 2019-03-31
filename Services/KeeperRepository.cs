@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MP.Data;
@@ -13,6 +14,11 @@ namespace MP.Keeper.Services {
             _context = context;
         }
 
+        public RubReport GetReportTransaction(Guid id) {
+            var transaction = _context.RubReports.FirstOrDefault(c => c.Id == id);
+
+            return transaction;
+        }
 
         public PagedList<RubReport> GetReportTransactions(ReportsResourceParameters parameters) {
             var collectionBeforePaging = _context.RubReports
@@ -20,25 +26,38 @@ namespace MP.Keeper.Services {
                 .AsQueryable();
 
             // Search.
-            if (!string.IsNullOrEmpty(parameters.SearchQuery)) {
-                var searchQyeries = parameters.SearchQuery.Split(" ").ToList();
+            // if (!string.IsNullOrEmpty(parameters.SearchQuery)) {
+            //     var searchQyeries = parameters.SearchQuery.Split(" ").ToList();
 
-                foreach (var query in searchQyeries) {
-                    var searchQueryForWhereClause = query.Trim().ToLowerInvariant();
-                    collectionBeforePaging = collectionBeforePaging
-                        .Where(c => c.QpayTransactionId.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                            || c.GatewayTransactionId.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                            || c.ServiceProviderTransactionId.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                            || c.Account.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                        );
-                }
-            }
+            //     foreach (var query in searchQyeries) {
+            //         var searchQueryForWhereClause = query.Trim().ToLowerInvariant();
+            //         collectionBeforePaging = collectionBeforePaging
+            //             .Where(c => c.QpayTransactionId.ToLowerInvariant().Contains(searchQueryForWhereClause)
+            //                 || c.GatewayTransactionId.ToLowerInvariant().Contains(searchQueryForWhereClause)
+            //                 || c.ServiceProviderTransactionId.ToLowerInvariant().Contains(searchQueryForWhereClause)
+            //                 || c.Account.ToLowerInvariant().Contains(searchQueryForWhereClause)
+            //             );
+            //     }
+            // }
 
             var reports =  PagedList<RubReport>.Create(collectionBeforePaging,
                     parameters.PageNumber,
                     parameters.PageSize);
 
             return reports;
+        }
+
+        // Save to the database.
+        public bool Save() {
+            return (_context.SaveChanges() >= 0);
+        }
+
+        public void AddTransactionToReport(RubReport report) {
+            if (report.Id == Guid.Empty) {
+                report.Id = Guid.NewGuid();
+            }
+
+            _context.RubReports.Add(report);
         }
     }
 }

@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MP.Data.Keeper;
 using MP.Helpers;
 using MP.Keeper.Helpers;
 using MP.Keeper.Models;
@@ -21,26 +23,30 @@ namespace MP.Keeper.Controllers {
             _rep = rep;
         }
 
-        // GET: /api/1.0/keeper/reports
-        [HttpGet(Name = "GetReports")]
-        public async Task<IActionResult> GetReports([FromRoute]ReportsResourceParameters parameters) {
-            var transactionsFromRepo = _rep.GetReportTransactions(parameters);
-            
-            var previousPageLink = transactionsFromRepo.HasPrevious ?
-                CreateReportsResourceUri(parameters,
-                    ResourceUriType.PreviousPage) : null;
-            
-            var nextPageLink = transactionsFromRepo.HasNext ?
-                CreateReportsResourceUri(parameters,
-                    ResourceUriType.NextPage) : null;
+        // GET: /api/1.0/keeper/reports/5
+        [HttpGet("{id}", Name = "GetRubReport")]
+        public async Task<IActionResult> GetReport([FromRoute] Guid id) {
+            var reportFromRepo = _rep.GetReportTransaction(id);
+            if (reportFromRepo == null) {
+                return NotFound();
+            }
 
+            var report = Mapper.Map<RubReportDto>(reportFromRepo);
+            return Ok(report);
+        }
+
+        // GET: /api/1.0/keeper/reports
+        [HttpGet(Name = "GetRubReports")]
+        public async Task<IActionResult> GetRubReports([FromQuery] ReportsResourceParameters parameters) {
+            var transactionsFromRepo = _rep.GetReportTransactions(parameters);
+             
             var paginationMetadata = new {
                 totalCount = transactionsFromRepo.TotalCount,
                 pageSize = transactionsFromRepo.PageSize,
                 currentPage = transactionsFromRepo.CurrentPage,
                 totalPages = transactionsFromRepo.TotalPages,
-                previousPageLink = previousPageLink,
-                nextPageLink = nextPageLink
+                // previousPageLink = previousPageLink,
+                // nextPageLink = nextPageLink
             };
             
             Response.Headers.Add("X-Pagination",
@@ -53,25 +59,22 @@ namespace MP.Keeper.Controllers {
         private string CreateReportsResourceUri(ReportsResourceParameters parameters, ResourceUriType type) {
             switch (type) {
             case ResourceUriType.PreviousPage:
-                return _urlHelper.Link("GetReports",
+                return _urlHelper.Link("GetRubReports",
                     new {
-                        firsLetter = parameters.FirstLetter,
                         pageNumber = parameters.PageNumber - 1,
                         pageSize = parameters.PageSize,
                         searchQuery = parameters.SearchQuery
                     });
             case ResourceUriType.NextPage:
-                return _urlHelper.Link("GetReports",
+                return _urlHelper.Link("GetRubReports",
                     new {
-                        firsLetter = parameters.FirstLetter,
                         pageNumber = parameters.PageNumber + 1,
                         pageSize = parameters.PageSize,
                         searchQuery = parameters.SearchQuery
                     });
             default:
-                return _urlHelper.Link("GetReports",
+                return _urlHelper.Link("GetRubReports",
                     new {
-                        firsLetter = parameters.FirstLetter,
                         pageNumber = parameters.PageNumber,
                         pageSize = parameters.PageSize,
                         searchQuery = parameters.SearchQuery
@@ -80,9 +83,25 @@ namespace MP.Keeper.Controllers {
         }
 
         // POST: /api/1.0/keeper/reports
-        // [HttpPost]
-        // public async Task<IActionResult> AddTransactionToReport([FromBody]) {
+        [HttpPost]
+        public async Task<IActionResult> AddTransactionToReport([FromBody] RubReportForCreationDto reportDto) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+            
+            var reportEntity = Mapper.Map<RubReport>(reportDto);
 
-        // }
+            reportEntity.Id = Guid.NewGuid();
+            _rep.AddTransactionToReport(reportEntity);
+
+            if (!_rep.Save()) {
+                return StatusCode(500, "A problem happened with handling your request.");
+            }
+
+            var reportToReturn = Mapper.Map<RubReportDto>(reportEntity);
+            return CreatedAtRoute("GetRubReport",
+                new { id = reportToReturn.Id },
+                reportToReturn);
+        }
     }
 }

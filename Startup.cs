@@ -16,6 +16,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MP.Data;
+using MP.Data.Keeper;
+using MP.Keeper.Models;
 using MP.Keeper.Services;
 using MP.Models.User;
 using MP.Services;
@@ -156,6 +158,10 @@ namespace MP {
                 config.CreateMap<UserDto, AppUser>();
                 config.CreateMap<UserForCreationDto, AppUser>();
                 config.CreateMap<AppUser, UserDto>();
+
+                config.CreateMap<RubReportDto, RubReport>();
+                config.CreateMap<RubReportForCreationDto, RubReport>();
+                config.CreateMap<RubReport, RubReportDto>();
             });
             
             app.UseHttpsRedirection();
