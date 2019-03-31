@@ -89,19 +89,42 @@ namespace MP.Keeper.Controllers {
                 return BadRequest(ModelState);
             }
             
-            var reportEntity = Mapper.Map<RubReport>(reportDto);
+            // Идемпотентность
+            // Транзакция существует?
+            var reportFromRepo = _rep.GetReportTransaction(reportDto.ServiceUpgId,
+                reportDto.QpayTransactionId,
+                reportDto.ServiceProviderTransactionId);
 
-            reportEntity.Id = Guid.NewGuid();
-            _rep.AddTransactionToReport(reportEntity);
+            if (reportFromRepo != null) {
+                // Обновить данные транзакции
+                reportFromRepo.QpayPayedAt = reportDto.QpayPayedAt;
+                reportFromRepo.Status = reportDto.Status;
 
-            if (!_rep.Save()) {
-                return StatusCode(500, "A problem happened with handling your request.");
+                if (!_rep.Save()) {
+                    return StatusCode(500, "A problem happened with handling your request.");
+                }
+
+                var reportToReturn = Mapper.Map<RubReportDto>(reportFromRepo);
+                return CreatedAtRoute("GetRubReport",
+                    new { id = reportToReturn.Id },
+                    reportToReturn);
+
+            } else {
+                // Если нет, то создаем новую
+                var reportEntity = Mapper.Map<RubReport>(reportDto);
+
+                reportEntity.Id = Guid.NewGuid();
+                _rep.AddTransactionToReport(reportEntity);
+
+                if (!_rep.Save()) {
+                    return StatusCode(500, "A problem happened with handling your request.");
+                }
+
+                var reportToReturn = Mapper.Map<RubReportDto>(reportEntity);
+                return CreatedAtRoute("GetRubReport",
+                    new { id = reportToReturn.Id },
+                    reportToReturn);
             }
-
-            var reportToReturn = Mapper.Map<RubReportDto>(reportEntity);
-            return CreatedAtRoute("GetRubReport",
-                new { id = reportToReturn.Id },
-                reportToReturn);
         }
     }
 }

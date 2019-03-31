@@ -20,9 +20,18 @@ namespace MP.Keeper.Services {
             return transaction;
         }
 
+        public RubReport GetReportTransaction(int serviceUpgId, string qpayTransactionId, string providerTransactionId) {
+            return _context.RubReports
+                .Where(t => t.ServiceUpgId == serviceUpgId
+                    && t.QpayTransactionId == qpayTransactionId
+                    && t.ServiceProviderTransactionId == providerTransactionId)
+                .FirstOrDefault();
+        }
+
         public PagedList<RubReport> GetReportTransactions(ReportsResourceParameters parameters) {
             var collectionBeforePaging = _context.RubReports
                 .AsNoTracking()
+                .OrderByDescending(c => c.QpayCreatedAt)
                 .AsQueryable();
 
             // Search.

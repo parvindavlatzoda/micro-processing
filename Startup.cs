@@ -150,13 +150,12 @@ namespace MP {
                 app.UseDeveloperExceptionPage();
             }
             else {
-                //app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                //app.UseHsts();
-                app.UseDeveloperExceptionPage();
-
+                app.UseHsts();
+                //app.UseDeveloperExceptionPage();
             }
-            
+
             AutoMapper.Mapper.Initialize(config => {
                 config.CreateMap<UserDto, AppUser>();
                 config.CreateMap<UserForCreationDto, AppUser>();
@@ -166,13 +165,13 @@ namespace MP {
                 config.CreateMap<RubReportForCreationDto, RubReport>();
                 config.CreateMap<RubReport, RubReportDto>();
             });
-            
+
             // For NGINX
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-            
+
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -187,8 +186,7 @@ namespace MP {
                 spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment()) {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-                    //spa.UseReactDevelopmentServer(npmScript: "start");
+                    spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
         }

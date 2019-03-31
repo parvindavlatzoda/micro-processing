@@ -180,10 +180,10 @@ export default class Home extends React.Component {
 
     this.state = {
       isLoading: true,
-      transactions: []
+      transactions: [],
     }
 
-    fetch('/api/1.0/keeper/reports?pageSize=20', {
+    fetch('/api/1.0/keeper/reports?pageSize=500', {
       headers: {
         'Authorization': `bearer ${Auth.getToken()}`,
         'Content-type': 'application/json'

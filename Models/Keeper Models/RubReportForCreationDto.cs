@@ -21,6 +21,7 @@ namespace MP.Keeper.Models {
         public string ServiceTitle { get; set; }
         [Required]
         public int ServiceUpgId { get; set;}
+        public string Status { get; set; }
         public string PhoneNumber { get; set; }
         [Required]
         public DateTime QpayCreatedAt { get; set; }

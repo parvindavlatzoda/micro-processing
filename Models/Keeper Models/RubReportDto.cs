@@ -19,5 +19,6 @@ namespace MP.Keeper.Models {
         public DateTime QpayPayedAt { get; set; }
         public string TerminalNumber { get; set; }
         public string AgentNumber { get; set; }
+        public string Status { get; set; }
     }
 }
