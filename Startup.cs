@@ -164,7 +164,7 @@ namespace MP {
                 config.CreateMap<RubReport, RubReportDto>();
             });
             
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 

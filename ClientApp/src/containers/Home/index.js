@@ -100,6 +100,7 @@ const columns = [{
   key: 'action',
   render: (text, record) => (
     <span>
+      <a href="javascript:;">{record.amountInTjs}</a>,
       <a href="javascript:;">Details</a>
       <Divider type="vertical" />
       <Popconfirm title="Are you sure？" icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}>
