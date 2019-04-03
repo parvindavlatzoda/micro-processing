@@ -3,14 +3,16 @@ using System;
 using MP.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MP.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190329170951_KeeperReports")]
+    partial class KeeperReports
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,12 +104,6 @@ namespace MP.Data.Migrations
                     b.Property<decimal>("RubRate");
 
                     b.Property<string>("ServiceProviderTransactionId");
-
-                    b.Property<string>("ServiceTitle");
-
-                    b.Property<int>("ServiceUpgId");
-
-                    b.Property<string>("Status");
 
                     b.Property<string>("TerminalNumber");
 

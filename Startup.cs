@@ -4,6 +4,7 @@ using AspNet.Security.ApiKey.Providers.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MP.Data;
+using MP.Data.Keeper;
+using MP.Keeper.Models;
+using MP.Keeper.Services;
 using MP.Models.User;
 using MP.Services;
 using Newtonsoft.Json.Serialization;
@@ -121,21 +125,23 @@ namespace MP {
             
             // Adding repos
             services.AddScoped<IAccountRepository, AccountRepository>();
-            
+            services.AddScoped<IKeeperRepository, KeeperRepository>();
+
             // API versioning
             services.AddApiVersioning(options => {
                 options.ReportApiVersions = true;
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.DefaultApiVersion = new ApiVersion(1, 0);
             });
-            
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper, UrlHelper>(implementationFactory => {
                 var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
                 return new UrlHelper(actionContext);
             });
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp"; });
         }
 
         // Сonfiguring the HTTP request pipeline.
@@ -147,15 +153,26 @@ namespace MP {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                //app.UseDeveloperExceptionPage();
             }
-            
+
             AutoMapper.Mapper.Initialize(config => {
                 config.CreateMap<UserDto, AppUser>();
                 config.CreateMap<UserForCreationDto, AppUser>();
                 config.CreateMap<AppUser, UserDto>();
+
+                config.CreateMap<RubReportDto, RubReport>();
+                config.CreateMap<RubReportForCreationDto, RubReport>();
+                config.CreateMap<RubReport, RubReportDto>();
             });
-            
-            app.UseHttpsRedirection();
+
+            // For NGINX
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 

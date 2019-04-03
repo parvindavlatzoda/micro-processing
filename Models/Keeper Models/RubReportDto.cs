@@ -1,7 +1,8 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace MP.Data.Keeper {
-    public class RubReport {
+namespace MP.Keeper.Models {
+    public class RubReportDto {
         public Guid Id { get; set; }
         public string QpayTransactionId { get; set; }
         public string GatewayTransactionId { get; set; }

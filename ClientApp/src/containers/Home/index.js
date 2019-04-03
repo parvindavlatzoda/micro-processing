@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react'
 import TransactionsSearch from './TransactionsSearch'
-
+import Auth from '../../modules/Auth'
 import { Popconfirm, Icon, Divider, Table, Tag, Button, Drawer, Col, Row } from 'antd';
-
+import pgFormatDate from '../../utils/pgFormatDate'
 const ButtonGroup = Button.Group;
 
 const columns = [{
   title: 'Created at',
-  dataIndex: 'name',
+  dataIndex: 'qpayCreatedAt',
   filters: [{
     text: 'Joe',
     value: 'Joe',
@@ -30,42 +30,57 @@ const columns = [{
   onFilter: (value, record) => record.name.indexOf(value) === 0,
   sorter: (a, b) => a.name.length - b.name.length,
   sortDirections: ['descend'],
+  render: text => <a href="javascript:;">{pgFormatDate(text)}</a>,
 }, {
   title: 'ID',
-  dataIndex: 'age',
+  dataIndex: 'qpayTransactionId',
   defaultSortOrder: 'descend',
 }, {
   title: 'Incoming ID',
-  dataIndex: 'age',
+  dataIndex: 'gatewayTransactionId',
+  defaultSortOrder: 'descend',
+}, {
+  title: 'Provider ID',
+  dataIndex: 'serviceProviderTransactionId',
   defaultSortOrder: 'descend',
 }, {
   title: 'Service',
-  dataIndex: 'age',
+  dataIndex: 'serviceTitle',
   defaultSortOrder: 'descend',
   sorter: (a, b) => a.age - b.age,
 }, {
   title: 'Account',
-  dataIndex: 'age',
+  dataIndex: 'account',
   defaultSortOrder: 'descend',
 }, {
-  title: 'Amount',
-  dataIndex: 'age',
+  title: 'TJS',
+  dataIndex: 'amountInTjs',
+  defaultSortOrder: 'descend',
+  sorter: (a, b) => a.age - b.age,
+}, {
+  title: 'RUB',
+  dataIndex: 'amountInRub',
+  defaultSortOrder: 'descend',
+  sorter: (a, b) => a.age - b.age,
+}, {
+  title: 'Rate',
+  dataIndex: 'rubRate',
   defaultSortOrder: 'descend',
   sorter: (a, b) => a.age - b.age,
 }, {
   title: 'Status',
   dataIndex: 'status',
-  render: tags => (
-    <span>
-      {tags.map(tag => {
-        let color = tag == "accepted" ? 'geekblue' : 'green';
-        if (tag === 'canceled') {
-          color = 'volcano';
-        }
-        return <Tag color={color} key={tag}>{tag.toUpperCase()}</Tag>;
-      })}
-    </span>
-  ),
+  // render: tags => (
+  //   <span>
+  //     {tags.map(tag => {
+  //       let color = tag == "accepted" ? 'geekblue' : 'green';
+  //       if (tag === 'canceled') {
+  //         color = 'volcano';
+  //       }
+  //       return <Tag color={color} key={tag}>{tag.toUpperCase()}</Tag>;
+  //     })}
+  //   </span>
+  // ),
 }, {
   title: 'Gate',
   dataIndex: 'address',
@@ -85,6 +100,7 @@ const columns = [{
   key: 'action',
   render: (text, record) => (
     <span>
+      <a href="javascript:;">{record.amountInTjs}</a>,
       <a href="javascript:;">Details</a>
       <Divider type="vertical" />
       <Popconfirm title="Are you sure？" icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}>
@@ -160,11 +176,30 @@ const DescriptionItem = ({ title, content }) => (
 
 export default class Home extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      loading: true
-    };
+    super(props)
 
+    this.state = {
+      isLoading: true,
+      transactions: [],
+    }
+
+    fetch('/api/1.0/keeper/reports?pageSize=500', {
+      headers: {
+        'Authorization': `bearer ${Auth.getToken()}`,
+        'Content-type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        this.setState({
+          transactions: data,
+          isLoading: false
+        });
+        console.log(data)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   state = { visible: false };
@@ -187,7 +222,7 @@ export default class Home extends React.Component {
       <Fragment>
         <TransactionsSearch/>
         <br/>
-        <Table columns={columns} dataSource={data} onChange={onChange} size="small"/>
+        <Table columns={columns} dataSource={this.state.transactions} onChange={onChange} size="small"/>
         <a onClick={this.showDrawer}>Click me</a>
         <Drawer
           width={640}
