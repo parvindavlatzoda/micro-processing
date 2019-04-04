@@ -20,6 +20,7 @@ using MP.Data;
 using MP.Data.Keeper;
 using MP.Keeper.Models;
 using MP.Keeper.Services;
+using MP.Models.Keeper;
 using MP.Models.User;
 using MP.Services;
 using Newtonsoft.Json.Serialization;
@@ -164,6 +165,14 @@ namespace MP {
                 config.CreateMap<RubReportDto, RubReport>();
                 config.CreateMap<RubReportForCreationDto, RubReport>();
                 config.CreateMap<RubReport, RubReportDto>();
+
+                config.CreateMap<CurrencyDto, Currency>();
+                config.CreateMap<CurrencyForCreationDto, Currency>();
+                config.CreateMap<Currency, CurrencyDto>();
+
+                config.CreateMap<RateDto, CurrencyRate>();
+                config.CreateMap<RateForCreationDto, CurrencyRate>();
+                config.CreateMap<CurrencyRate, RateDto>();
             });
 
             // For NGINX
