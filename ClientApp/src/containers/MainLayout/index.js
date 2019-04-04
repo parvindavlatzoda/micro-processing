@@ -98,6 +98,13 @@ class MainLayout extends Component {
                           <Link to="/management"/>
                         </Menu.Item>
                        
+                        <Menu.Item key="4">
+                          <Icon type="dollar"/>
+                          <span>Курс Валют</span>
+                          <Link to="/rates"/>
+                        </Menu.Item>
+                       
+                       
                         {/* <SubMenu
               key="sub1"
               title={<span><Icon type="user" /><span>User</span></span>}
