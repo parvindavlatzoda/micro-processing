@@ -1,21 +1,29 @@
 import React, { Component, Fragment } from 'react'
 import { Button , Table} from 'antd'
+import Auth from '../../modules/Auth'
+import pgFormatDate from '../../utils/pgFormatDate'
+
+
+
+function onChange(pagination, filters, sorter) {
+  console.log('params', pagination, filters, sorter);
+}
 
 const data = [{
     key: '1',
     curency: 'RUB',
     age: 32,
-    address: 'New York No. 1 Lake Park',
+    createdAt: 'New York No. 1 Lake Park',
   }, {
     key: '2',
     curency: 'EUR',
     age: 42,
-    address: 'London No. 1 Lake Park',
+    createdAt: 'London No. 1 Lake Park',
   }, {
     key: '3',
     curency: 'USD',
     age: 32,
-    address: 'Sidney No. 1 Lake Park',
+    createdAt: 'Sidney No. 1 Lake Park',
   }, {
     key: '4',
     curency: 'RUB',
@@ -24,8 +32,35 @@ const data = [{
   }];
   
 
-class Rates extends Component {
+class TableRates extends Component {
   
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isLoading: true,
+      transactions: [],
+    }
+
+    fetch('/api/1.0/keeper/rates?pageSize=500', {
+      headers: {
+        'Authorization': `bearer ${Auth.getToken()}`,
+        'Content-type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        this.setState({
+          transactions: data,
+          isLoading: false
+        });
+        console.log(data)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
 
     state = {
         filteredInfo: null,
@@ -66,37 +101,44 @@ class Rates extends Component {
         filteredInfo = filteredInfo || {};
         const columns = [{
           title: 'Валюта',
-          dataIndex: 'curency',
-          key: 'curency',
+          dataIndex: 'isoCode',
+          key: 'isoCode',
           filters: [
             { text: 'RUB', value: 'RUB' },
             { text: 'USD', value: 'USD' },
           ],
-          filteredValue: filteredInfo.curency || null,
-          onFilter: (value, record) => record.curency.includes(value),
-          sorter: (a, b) => a.curency.length - b.curency.length,
-          sortOrder: sortedInfo.columnKey === 'curency' && sortedInfo.order,
+          filteredValue: filteredInfo.isoCode || null,
+          onFilter: (value, record) => record.isoCode.includes(value),
+          sorter: (a, b) => a.isoCode.length - b.isoCode.length,
+          sortOrder: sortedInfo.columnKey === 'isoCode' && sortedInfo.order,
         }, {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
+            title: 'курс',
+            dataIndex: 'rate',
+            key: 'rate',
                      
           },  {
-            title: 'Age',
-            dataIndex: 'age',
-            key: 'age',
-            sorter: (a, b) => a.age - b.age,
-            sortOrder: sortedInfo.columnKey === 'age' && sortedInfo.order,
+            title: 'createdAt',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: (a, b) => a.createdAt - b.createdAt,
+            sortOrder: sortedInfo.columnKey === 'createdAt' && sortedInfo.order,
+           
+            onFilter: (value, record) => record.createdAt.indexOf(value) === 0,
+            sorter: (a, b) => a.createdAt.length - b.createdAt.length,
+            //sortDirections: ['descend'],
+            render: text => <a href="javascript:;">{pgFormatDate(text)}</a>,
+            
         } ];
 
 
 
     return (
       <Fragment> 
-        <Table columns={columns} dataSource={data} onChange={this.handleChange} />
+        <Table columns={columns} dataSource={this.state.transactions} onChange={onChange} size="small"/>
+
       </Fragment>
     )
   }
 }
 
-export default Rates
+export default TableRates
