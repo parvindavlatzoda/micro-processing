@@ -14,6 +14,8 @@ namespace MP.Data {
 
         // Keeper
         public DbSet<RubReport> RubReports { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<CurrencyRate> CurrencyRates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);
