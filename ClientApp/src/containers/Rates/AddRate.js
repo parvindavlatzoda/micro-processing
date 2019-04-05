@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react'
 import { Modal, Button, Select, Input } from 'antd';
 import Auth from '../../modules/Auth'
+import axios from 'axios'
 
 const Option = Select.Option
 
@@ -16,6 +17,7 @@ class AddRate extends Component {
   state = { 
     visible: false,
     currencies: []
+
   }
 
   showModal = () => {
@@ -24,14 +26,20 @@ class AddRate extends Component {
     });
   }
   componentDidMount = () => {
-    axios.get('/route')
+    axios.get('/api/1.0/keeper/currencies')
     .then(function (response) {
-    console.log(response);
+      const currencies = response.data
+      console.log(currencies)
+      this.setState(currencies)
+
+   
   })
     .catch(function (error) {
       console.log(error);
   });
   }
+
+    
 
   handleOk = (e) => {
     console.log(e);
@@ -48,6 +56,8 @@ class AddRate extends Component {
   }
 
   render() {
+    const {currencies} = this.state
+    console.log('DATA', currencies)
     return (
       <Fragment>
         <Button type="primary" style={{margin: '1em'}} onClick={this.showModal}>
@@ -60,10 +70,10 @@ class AddRate extends Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          <Select defaultValue="2" onChange={handleChange} style={{margin: '1em'}}>
-            <Option value="1">Россиский рубль</Option>
-            <Option value="2">Американский доллар</Option>
-          </Select>
+         <Select defaultValue="1" onChange={handleChange} style={{ margin: '1em' }}>
+          {!!currencies &&
+          currencies.map((cur, index) => <Option value={index}>{cur.title}</Option>)}
+         </Select>
           <Input type="number" placeholder="курс" style={{margin: '1em'}}></Input>
         </Modal>
       </Fragment>
