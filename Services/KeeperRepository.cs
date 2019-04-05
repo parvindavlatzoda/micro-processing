@@ -107,6 +107,7 @@ namespace MP.Keeper.Services {
 
         public PagedList<CurrencyRate> GetCurrencyRates(RatesResourceParameters parameters) {
             var collectionBeforePaging = _context.CurrencyRates
+                .OrderByDescending(c => c.CreatedAt)
                 .AsNoTracking()
                 .AsQueryable();
 
