@@ -5,19 +5,15 @@ import axios from 'axios'
 
 const Option = Select.Option
 
-function handleChange(value) {
-  console.log(`selected ${value}`);
-}
-
 class AddRate extends Component {
-
-
-
 
   state = { 
     visible: false,
-    currencies: []
-
+    currencies: [],
+    selected: null,
+    rate: null,
+    state : null,
+    isLoading: false,
   }
 
   showModal = () => {
@@ -26,26 +22,44 @@ class AddRate extends Component {
     });
   }
   componentDidMount = () => {
-    axios.get('/api/1.0/keeper/currencies')
-    .then(function (response) {
-      const currencies = response.data
-      console.log(currencies)
-      this.setState(currencies)
-
-   
-  })
-    .catch(function (error) {
-      console.log(error);
-  });
+    axios
+      .get('/api/1.0/keeper/currencies')
+      .then(response => {
+        const currencies = response.data.currencies
+        console.log(currencies)
+        this.setState({ currencies })
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
   }
 
-    
+  handleChange = selected => {
+    this.setState({ selected })
+  }
+  
+  handleChangeInput = event => {
+    const rate = event.target.value
+    this.setState({ rate })
+  }   
 
-  handleOk = (e) => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
+  handleAddCurrency = () => {
+    const { selected, currencies, rate } = this.state
+    const currencyId = currencies[selected].id
+    this.setState({ isLoading: true })
+    axios({
+      method: 'post',
+      url: 'api/1.0/keeper/rates',
+
+      data: {
+        currencyId,
+        rate,
+      },
+    })
+    .then(res => {
+      this.setState({ isLoading: true, visible: false, })
+    })
+      .catch(err => console.log(err))
   }
 
   handleCancel = (e) => {
@@ -56,7 +70,7 @@ class AddRate extends Component {
   }
 
   render() {
-    const {currencies} = this.state
+    const {currencies, selected, rate, isLoading } = this.state
     console.log('DATA', currencies)
     return (
       <Fragment>
@@ -69,12 +83,33 @@ class AddRate extends Component {
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
+          footer={[
+            <Button key="back" onClick={this.handleCancel}>
+              Отмена
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              loading={isLoading}
+              onClick={this.handleAddCurrency}
+              disabled={selected == null}
+            >
+              Добавить
+            </Button>,
+          ]}
+        
         >
-         <Select defaultValue="1" onChange={handleChange} style={{ margin: '1em' }}>
-          {!!currencies &&
-          currencies.map((cur, index) => <Option value={index}>{cur.title}</Option>)}
-         </Select>
-          <Input type="number" placeholder="курс" style={{margin: '1em'}}></Input>
+        {selected}
+        <Select onChange={this.handleChange}  style={{ margin: '1em', minWidth: '10em', }}>
+            {!!currencies &&
+              currencies.map((cur, index) => (
+                <Option key={cur.id} value={index} >
+                  {cur.title}
+                </Option>
+              ))}
+          </Select>
+          <Input type="number" placeholder="курс" onChange={this.handleChangeInput} style={{margin: '1em'}}></Input>
+          
         </Modal>
       </Fragment>
     );
