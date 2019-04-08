@@ -96,7 +96,7 @@ class AddRate extends Component {
               type="primary"
               loading={isLoading}
               onClick={this.handleAddCurrency}
-              
+              disabled={selected == null && defaultId == null}
             >
               Добавить
             </Button>,
