@@ -14,6 +14,7 @@ class AddRate extends Component {
     rate: null,
     state : null,
     isLoading: false,
+    defaultId: null,
   }
 
   showModal = () => {
@@ -27,7 +28,10 @@ class AddRate extends Component {
       .then(response => {
         const currencies = response.data.currencies
         console.log(currencies)
-        this.setState({ currencies })
+        const defaultId = response.data.default.id
+        console.log(defaultId)
+        this.setState({ currencies, defaultId })
+       
       })
       .catch(function(error) {
         console.log(error)
@@ -45,7 +49,7 @@ class AddRate extends Component {
 
   handleAddCurrency = () => {
     const { selected, currencies, rate } = this.state
-    const currencyId = currencies[selected].id
+    const currencyId = selected
     this.setState({ isLoading: true })
     axios({
       method: 'post',
@@ -56,8 +60,8 @@ class AddRate extends Component {
         rate,
       },
     })
-    .then(res => {
-      this.setState({ isLoading: true, visible: false, })
+    .then(response => {
+      this.setState({ isLoading: false, visible: false, })
     })
       .catch(err => console.log(err))
   }
@@ -92,7 +96,7 @@ class AddRate extends Component {
               type="primary"
               loading={isLoading}
               onClick={this.handleAddCurrency}
-              disabled={selected == null}
+              
             >
               Добавить
             </Button>,
@@ -100,10 +104,10 @@ class AddRate extends Component {
         
         >
         {selected}
-        <Select onChange={this.handleChange}  style={{ margin: '1em', minWidth: '10em', }}>
+        <Select onChange={this.handleChange}   style={{ margin: '1em' }} value={ selected ? selected : defaultId }>
             {!!currencies &&
               currencies.map((cur, index) => (
-                <Option key={cur.id} value={index} >
+                <Option key={cur.id} value={cur.id} >
                   {cur.title}
                 </Option>
               ))}
