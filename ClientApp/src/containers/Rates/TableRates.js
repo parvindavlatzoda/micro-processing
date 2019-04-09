@@ -9,39 +9,10 @@ function onChange(pagination, filters, sorter) {
   console.log('params', pagination, filters, sorter);
 }
 
-const data = [{
-    key: '1',
-    curency: 'RUB',
-    age: 32,
-    createdAt: 'New York No. 1 Lake Park',
-  }, {
-    key: '2',
-    curency: 'EUR',
-    age: 42,
-    createdAt: 'London No. 1 Lake Park',
-  }, {
-    key: '3',
-    curency: 'USD',
-    age: 32,
-    createdAt: 'Sidney No. 1 Lake Park',
-  }, {
-    key: '4',
-    curency: 'RUB',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  }];
-  
 
 class TableRates extends Component {
   
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      isLoading: true,
-      transactions: [],
-    }
-
+  getRates = () => {
     fetch('/api/1.0/keeper/rates?pageSize=500', {
       headers: {
         'Authorization': `bearer ${Auth.getToken()}`,
@@ -59,6 +30,19 @@ class TableRates extends Component {
       .catch((err) => {
         console.log(err);
       });
+  }
+  componentDidMount = () => {
+    this.getRates()
+
+  }
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isLoading: true,
+      transactions: [],
+    }
+    
   }
 
 

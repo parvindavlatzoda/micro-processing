@@ -29,8 +29,7 @@ class AddRate extends Component {
         console.log(currencies)
         const defaultId = response.data.default.id
         console.log(defaultId)
-        this.setState({ currencies, defaultId })
-
+        this.setState({ currencies, defaultId })   
        
       })
       .catch(function(error) {
