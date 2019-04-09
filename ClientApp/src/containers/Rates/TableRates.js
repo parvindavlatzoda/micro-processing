@@ -25,7 +25,7 @@ class TableRates extends Component {
           transactions: data,
           isLoading: false
         });
-        //console.log(data)
+        
       })
       .catch((err) => {
         console.log(err);
@@ -42,7 +42,7 @@ class TableRates extends Component {
       isLoading: true,
       transactions: [],
     }
-    
+
   }
 
 
