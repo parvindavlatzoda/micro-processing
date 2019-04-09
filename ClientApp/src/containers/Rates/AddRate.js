@@ -118,7 +118,7 @@ class AddRate extends Component {
           ]}
         
         >
-        {selected}
+        
         <Select onChange={this.handleChange}   style={{ margin: '1em' }} value={ selected ? selected : defaultId }>
             {!!currencies &&
               currencies.map((cur, index) => (
