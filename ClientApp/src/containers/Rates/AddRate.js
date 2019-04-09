@@ -17,12 +17,11 @@ class AddRate extends Component {
     defaultId: null,
   }
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
+  componentDidMount = () => { 
+    this.getCurrencies()   
   }
-  componentDidMount = () => {
+
+  getCurrencies =  () => {
     axios
       .get('/api/1.0/keeper/currencies')
       .then(response => {
@@ -31,11 +30,19 @@ class AddRate extends Component {
         const defaultId = response.data.default.id
         console.log(defaultId)
         this.setState({ currencies, defaultId })
+
        
       })
       .catch(function(error) {
         console.log(error)
       })
+
+  }
+
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
   }
 
   handleChange = selected => {
@@ -48,8 +55,9 @@ class AddRate extends Component {
   }   
 
   handleAddCurrency = () => {
-    const { selected, currencies, rate } = this.state
-    const currencyId = selected
+    const { selected, currencies, rate, defaultId } = this.state
+    const currencyId = selected ? selected : defaultId
+    console.log(rate, currencyId)
     this.setState({ isLoading: true })
     axios({
       method: 'post',
@@ -62,8 +70,13 @@ class AddRate extends Component {
     })
     .then(response => {
       this.setState({ isLoading: false, visible: false, })
+      this.getCurrencies()
     })
-      .catch(err => console.log(err))
+
+      .catch(err => { 
+        this.setState({ isLoading: false })
+        console.log( err )
+      })
   }
 
   handleCancel = (e) => {
@@ -74,7 +87,7 @@ class AddRate extends Component {
   }
 
   render() {
-    const {currencies, selected, rate, isLoading } = this.state
+    const {currencies, selected, rate, isLoading , defaultId} = this.state
     console.log('DATA', currencies)
     return (
       <Fragment>
@@ -96,7 +109,10 @@ class AddRate extends Component {
               type="primary"
               loading={isLoading}
               onClick={this.handleAddCurrency}
-              disabled={selected == null && defaultId == null}
+              disabled={
+                (selected == null && defaultId == null) ||
+                (rate == null || rate === '')
+              }
             >
               Добавить
             </Button>,
