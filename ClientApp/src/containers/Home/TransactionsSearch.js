@@ -97,7 +97,7 @@ class TimeRelatedForm extends React.Component {
     };
     return (
       <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-        <Form.Item
+        {/* <Form.Item
           label="Интервал"
           style={{ margin: '0' }}
         >
@@ -117,7 +117,7 @@ class TimeRelatedForm extends React.Component {
             <Option value="lucy">Lucy</Option>
             <Option value="tom">Tom</Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           label="Период"
           style={{ margin: '0' }}
@@ -126,7 +126,7 @@ class TimeRelatedForm extends React.Component {
             <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
           )}
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           label="Аккаунт"
           style={{ margin: '0' }}
         >
@@ -158,7 +158,7 @@ class TimeRelatedForm extends React.Component {
             <Option value="lucy">Lucy</Option>
             <Option value="tom">Tom</Option>
           </Select> 
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           label="Service"
           style={{ margin: '0' }}
@@ -181,7 +181,7 @@ class TimeRelatedForm extends React.Component {
             <Option value="325">Тселл (МБТ, рубль)</Option>
           </Select>
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           label="Status"
           style={{ margin: '0' }}
         >
@@ -201,7 +201,7 @@ class TimeRelatedForm extends React.Component {
             <Option value="lucy">Lucy</Option>
             <Option value="tom">Tom</Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           style={{ margin: '0' }}
           wrapperCol={{
@@ -209,7 +209,7 @@ class TimeRelatedForm extends React.Component {
             sm: { span: 16, offset: 3 },
           }}
         >
-          <Button type="primary" htmlType="submit" style={{ marginRight: '1em' }} disabled>Search</Button>
+          {/* <Button type="primary" htmlType="submit" style={{ marginRight: '1em' }} disabled>Search</Button> */}
           <Button icon="download" onClick={success} htmlType="button">Download .csv</Button>
         </Form.Item>
       </Form>
