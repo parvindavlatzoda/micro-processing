@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -125,6 +126,54 @@ namespace MP.Keeper.Controllers {
                     new { id = reportToReturn.Id },
                     reportToReturn);
             }
+        }
+
+        // GET: /api/1.0/keeper/reports/csv
+        [Route("csv")]
+        [HttpGet]
+        [Produces("text/csv")]
+        public async Task<IActionResult> GenerateCsvFile([FromQuery] int? serviceId = null,
+            [FromQuery] DateTime? from = null,
+            [FromQuery] DateTime? to = null) {
+            var data = "Created at,QPay ID,Gateway ID,Provider ID,TJS,RUB,Rate,Service,Terminal\n";
+            var parameters = new ReportsResourceParameters {
+                
+            };
+
+            //var transactionsFromRepo = _rep.GetReportTransactions(parameters);
+            var transactionsFromRepo = _rep.GetReportTransactions(from, to, serviceId);
+
+            
+            foreach (var transaction in transactionsFromRepo) {
+                data += transaction.QpayCreatedAt;
+                data += "," + transaction.QpayTransactionId;
+                data += "," + transaction.GatewayTransactionId;
+                data += "," + transaction.ServiceProviderTransactionId;
+                data += "," + transaction.AmountInTjs;
+                data += "," + transaction.AmountInRub;
+                data += "," + transaction.RubRate;
+
+                switch (transaction.ServiceUpgId) {
+                    case 323:
+                        data += ",Megafon RT (IBT RUB)" ; 
+                    break;
+                    case 325:
+                        data += ",Tcell (IBT RUB)" ; 
+                    break;
+                    case 326:
+                        data += ",Babilon-M (IBT RUB)" ; 
+                    break;
+                    case 324:
+                        data += ",Beeline RT (IBT RUB)" ; 
+                    break;
+                }
+                
+                data += "," + transaction.TerminalNumber;
+                data += "\n";
+            }
+
+            var bytes = UnicodeEncoding.Unicode.GetBytes(data);
+            return File(bytes, "text/csv");
         }
     }
 }

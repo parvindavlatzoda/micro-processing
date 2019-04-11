@@ -156,7 +156,7 @@ export default class Home extends React.Component {
       transactions: [],
     }
 
-    fetch('/api/1.0/keeper/reports?pageSize=500', {
+    fetch('/api/1.0/keeper/reports?pageSize=100', {
       headers: {
         'Authorization': `bearer ${Auth.getToken()}`,
         'Content-type': 'application/json'

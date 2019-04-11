@@ -29,6 +29,26 @@ namespace MP.Keeper.Services {
                 .FirstOrDefault();
         }
 
+        public ICollection<RubReport> GetReportTransactions(DateTime? from = null, DateTime? to = null, int? serviceUpgId = null) {
+            var collection = _context.RubReports
+                .AsNoTracking();
+
+            if (from.HasValue) {
+                collection = collection.Where(t => t.QpayCreatedAt >= from);
+            }
+
+            if (to.HasValue) {
+                collection = collection.Where(t => t.QpayCreatedAt <= to);
+            }
+
+            if (serviceUpgId != null) {
+                collection = collection.Where(t => t.ServiceUpgId == serviceUpgId);
+            }
+
+
+            return collection.OrderBy(r => r.CreatedAt).ToList();
+        }
+
         public PagedList<RubReport> GetReportTransactions(ReportsResourceParameters parameters) {
             var collectionBeforePaging = _context.RubReports
                 .AsNoTracking()
@@ -107,6 +127,7 @@ namespace MP.Keeper.Services {
 
         public PagedList<CurrencyRate> GetCurrencyRates(RatesResourceParameters parameters) {
             var collectionBeforePaging = _context.CurrencyRates
+                .OrderByDescending(c => c.CreatedAt)
                 .AsNoTracking()
                 .AsQueryable();
 

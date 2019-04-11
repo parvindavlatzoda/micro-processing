@@ -9,6 +9,7 @@ namespace MP.Keeper.Services
     public interface IKeeperRepository
     {
         RubReport GetReportTransaction(Guid id);
+        ICollection<RubReport> GetReportTransactions(DateTime? from = null, DateTime? to = null, int? serviceUpgId = null);
         RubReport GetReportTransaction(int serviceUpgId, string qpayTransactionId, string providerTransactionId);
         PagedList<RubReport> GetReportTransactions(ReportsResourceParameters parameters);
         void AddTransactionToReport(RubReport report);
