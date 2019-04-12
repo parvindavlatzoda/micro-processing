@@ -13,10 +13,11 @@ class TimeRelatedForm extends React.Component {
 
   state = {
     services: [],
-    serviceId: null,
+    selected: 'all',    
     from: new Date(), 
     to: new Date(),
   }
+  
 
   handleChange = selected => {
     this.setState({ selected })
