@@ -168,7 +168,7 @@ export default class Home extends React.Component {
           transactions: data,
           isLoading: false
         });
-        console.log(data)
+//        console.log(data)
       })
       .catch((err) => {
         console.log(err);
