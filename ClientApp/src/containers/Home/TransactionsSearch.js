@@ -18,43 +18,37 @@ class TimeRelatedForm extends React.Component {
     to: new Date(),
   }
 
-  success = () => {
+  handleChange = selected => {
+    this.setState({ selected })
+  }
+
+  handleSubmit = e => {
+    e.preventDefault()
+
+  this.props.form.validateFields((err, fieldsValue) => {
+    if (err) {
+      return
+    }
+    const rangeTimeValue = fieldsValue['range-time-picker']
+    const from = rangeTimeValue[0].format('YYYY.MM.DD')
+    const to = rangeTimeValue[1].format('YYYY.MM.DD')
+
+    // тут будем делать запрос
     message.loading('Генерация отчета', 2)
     
-    const  { serviceId, from, to, selected } = this.state
+    const  { selected: serviceId } = this.state
+    console.log('ServId', serviceId)
 
-    fetch(`/api/1.0/keeper/reports/csv?serviceId=${serviceId}&from=${from}&to=${to}`, {
+    fetch(`/api/1.0/keeper/reports/csv?${serviceId !== 'all' ? `serviceId=${serviceId}&` : ''}from=${from}&to=${to}`, {
       })
         .then(res => res.blob()).then(blob => download(blob, 'report', 'text/csv'))
         .then(message.success('Отчет сгенерирован', 2))
         .then(message.info('Дождитесь окончания загрузки файла', 2.5))
         .catch((err) => {
           console.log(err);
-        });
-    
-  };
-
-  handleChange = selected => {
-    this.setState({ selected })
-  }
-
-  handleSubmit = e => {
-//    const from = rangeTimeValue[0].format('DD.MM.YYYY')
-//    const to = rangeTimeValue[1].format('DD.MM.YYYY')
-//    this.setState({ from, to })
-  
-    e.preventDefault()
-    this.props.form.validateFields((err, fieldsValue) => {
-      if (err) {
-        return
-      }
-      const rangeTimeValue = fieldsValue['range-time-picker']
-      console.log(
-        rangeTimeValue[0].format('DD.MM.YYYY'),
-        rangeTimeValue[1].format('DD.MM.YYYY'),
-      )
-    })
-  }
+        }); 
+  })
+}
 
   render() {
     const { selected } = this.state
