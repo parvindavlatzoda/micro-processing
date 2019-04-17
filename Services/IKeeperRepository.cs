@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MP.Data.Keeper;
 using MP.Helpers;
 using MP.Keeper.Helpers;
+using MP.Models.Keeper;
 
 namespace MP.Keeper.Services
 {
@@ -25,5 +26,6 @@ namespace MP.Keeper.Services
         void AddRateForCurrency(CurrencyRate rate);
         PagedList<CurrencyRate> GetCurrencyRates(RatesResourceParameters parameters);
 
+        IEnumerable<AggregatedReportDto> GetAggregatedReport(DateTime from, DateTime to, int? serviceId = null);
     }
 }

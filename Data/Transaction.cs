@@ -14,7 +14,7 @@ namespace MockProcessing.Data
         public decimal Amount { get; set; }             // Сумма платежа
         
         public bool Canceled { get; set; } = false;     // Отменен платеж или нет
-        
+
         public Status Status { get; set; }              // Статус платежа
         //public Code Code { get; set; }
         //public Product Product { get; set; }

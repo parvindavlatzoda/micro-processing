@@ -6,6 +6,7 @@ using MP.Data;
 using MP.Data.Keeper;
 using MP.Helpers;
 using MP.Keeper.Helpers;
+using MP.Models.Keeper;
 
 namespace MP.Keeper.Services {
     public class KeeperRepository : IKeeperRepository {
@@ -160,5 +161,78 @@ namespace MP.Keeper.Services {
 
             return rates;
         }
+
+        public IEnumerable<AggregatedReportDto> GetAggregatedReport(DateTime from, DateTime to, int? serviceId = null) {
+            var dataToReturn = new List<AggregatedReportDto>();
+            int totalDays = (to - from).Days;
+
+            if (serviceId == null) {
+                for (int i = 0; i <= totalDays; i++) {
+                    var beginingDate = from.AddDays(i);
+                
+                    var sumInTjs = _context.RubReports
+                        .Where(r => r.QpayCreatedAt >= beginingDate
+                                    && r.QpayCreatedAt <= beginingDate.AddDays(1)
+                            //&& r.ServiceUpgId == serviceId
+                        )
+                        .Sum(r => r.AmountInTjs);
+            
+                    var sumInRub = _context.RubReports
+                        .Where(r => r.QpayCreatedAt >= beginingDate
+                                    && r.QpayCreatedAt <= beginingDate.AddDays(1))
+                        .Sum(r => r.AmountInRub);
+            
+                    var quantity =  _context.RubReports
+                        .Count(r => r.QpayCreatedAt >= beginingDate
+                                    && r.QpayCreatedAt <= beginingDate.AddDays(1));
+                    
+                    dataToReturn.Add(new AggregatedReportDto {
+                        Date = from.AddDays(i),
+                        AmountInTjs = sumInTjs,
+                        AmountInRub = sumInRub,
+                        Quantity = quantity
+                    });
+                }
+            }
+            else {
+                for (int i = 0; i <= totalDays; i++) {
+                    var beginingDate = from.AddDays(i);
+                
+                    var sumInTjs = _context.RubReports
+                        .Where(r => r.QpayCreatedAt >= beginingDate
+                                    && r.QpayCreatedAt <= beginingDate.AddDays(1)
+                                    && r.ServiceUpgId == serviceId
+                        )
+                        .Sum(r => r.AmountInTjs);
+            
+                    var sumInRub = _context.RubReports
+                        .Where(r => r.QpayCreatedAt >= beginingDate
+                                    && r.QpayCreatedAt <= beginingDate.AddDays(1)
+                                    && r.ServiceUpgId == serviceId)
+                        .Sum(r => r.AmountInRub);
+            
+                    var quantity =  _context.RubReports
+                        .Count(r => r.QpayCreatedAt >= beginingDate
+                                    && r.QpayCreatedAt <= beginingDate.AddDays(1)
+                                    && r.ServiceUpgId == serviceId);
+                    
+                    dataToReturn.Add(new AggregatedReportDto {
+                        Date = from.AddDays(i),
+                        AmountInTjs = sumInTjs,
+                        AmountInRub = sumInRub,
+                        Quantity = quantity
+                    });
+                }
+            }
+
+
+
+
+
+
+
+            return dataToReturn;
+        }
+
     }
 }
