@@ -172,8 +172,31 @@ namespace MP.Keeper.Controllers {
                 data += "\n";
             }
 
-            var bytes = UnicodeEncoding.Unicode.GetBytes(data);
+            var bytes = UnicodeEncoding.UTF8.GetBytes(data);
             return File(bytes, "text/csv");
+        }
+    
+
+        ///api/{version:apiVersion}/keeper/reports/aggregated
+        [Route("aggregated")]
+        [HttpGet]
+        [Produces("text/csv")]
+        public async Task<IActionResult> GenerateAggregatedReport([FromQuery] DateTime from,
+            [FromQuery] DateTime to,
+            [FromQuery] int? serviceId = null) {
+                var reports = _rep.GetAggregatedReport(from, to, serviceId);
+                
+                var data = "Date,Sum in TJS,Sum in RUB,Quantity\n";
+                
+                foreach (var report in reports) {
+                    data += report.Date;
+                    data += "," + report.AmountInTjs;
+                    data += "," + report.AmountInRub;
+                    data += "," + report.Quantity + "\n";
+                }
+                
+                var bytes = UnicodeEncoding.UTF8.GetBytes(data);
+                return File(bytes, "text/csv");
         }
     }
 }
